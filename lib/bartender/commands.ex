@@ -4,7 +4,8 @@ defmodule Bartender.Commands do
   alias Bartender.Commands
 
   @commands [
-    Commands.Ping
+    Commands.Ping,
+    Commands.Register
   ]
 
   def commands() do
@@ -21,5 +22,9 @@ defmodule Bartender.Commands do
 
   def handle_interaction(%Interaction{data: %{name: "ping"}} = interaction) do
     Commands.Ping.handle(interaction)
+  end
+
+  def handle_interaction(%Interaction{data: %{name: "register"}} = interaction) do
+    Commands.Register.handle(interaction)
   end
 end
