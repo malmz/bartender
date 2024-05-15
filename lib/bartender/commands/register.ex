@@ -2,6 +2,7 @@ defmodule Bartender.Commands.Register do
   @behaviour Bartender.ApplicationCommand
 
   require Logger
+  alias Bartender.Utils
   alias Ecto.Changeset
   alias Bartender.Repo
   alias Bartender.Schema.Player
@@ -41,16 +42,9 @@ defmodule Bartender.Commands.Register do
         })
 
       {:error, changeset} ->
-        Logger.error("Error registering player: #{inspect(changeset)}")
-
         changeset
-        |> Changeset.traverse_errors(fn {msg, _opts} ->
-          msg
-        end)
-        |> Enum.map(fn {key, message} ->
-          "#{key} #{message}"
-        end)
-        |> Enum.join("\n")
+        |> tap(&Logger.error("Error registering player: #{inspect(&1)}"))
+        |> Utils.format_error()
         |> then(
           &Api.create_interaction_response(interaction, %{
             type: 4,

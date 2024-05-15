@@ -24,7 +24,9 @@ defmodule Bartender.MixProject do
     [
       {:nostrum, "~> 0.8"},
       {:ecto_sql, "~> 3.0"},
-      {:postgrex, ">= 0.0.0"}
+      {:postgrex, ">= 0.0.0"},
+      {:ok, "~> 2.3"},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
   end
 end
