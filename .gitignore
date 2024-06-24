@@ -29,3 +29,7 @@ bartender-*.tar
 
 /config/secrets.exs
 
+*.db
+*.db-shm
+*.db-wal
+

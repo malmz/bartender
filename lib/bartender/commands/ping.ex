@@ -5,12 +5,10 @@ defmodule Bartender.Commands.Ping do
   alias Nostrum.Api
 
   @impl true
-  def schema() do
-    %{
-      name: "ping",
-      description: "Ping the bot"
-    }
-  end
+  def name, do: "ping"
+
+  @impl true
+  def description, do: "Ping the bot"
 
   @impl true
   def handle(interaction) do

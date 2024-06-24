@@ -2,6 +2,8 @@ defmodule Bartender.Commands.Register do
   @behaviour Bartender.ApplicationCommand
 
   require Logger
+  alias Nostrum.Constants.ApplicationCommandOptionType, as: Opt
+  alias Nostrum.Constants.ApplicationCommandType
   alias Bartender.Utils
   alias Ecto.Changeset
   alias Bartender.Repo
@@ -10,21 +12,24 @@ defmodule Bartender.Commands.Register do
   alias Nostrum.Struct.Interaction
   alias Nostrum.Api
   import Bitwise
+  import Ecto.Query
 
   @impl true
-  def schema() do
-    %{
-      name: "register",
-      description: "Register as a player",
-      options: [
-        %{
-          type: 3,
-          name: "handle",
-          description: "Starting handle",
-          required: true
-        }
-      ]
-    }
+  def name, do: "register"
+
+  @impl true
+  def description, do: "Register as a player"
+
+  @impl true
+  def options() do
+    [
+      %{
+        type: Opt.string(),
+        name: "handle",
+        description: "Starting handle",
+        required: true
+      }
+    ]
   end
 
   @impl true
@@ -58,5 +63,10 @@ defmodule Bartender.Commands.Register do
     %Player{}
     |> Player.changeset(%{id: user_id, active_handle: handle, handles: [%{id: handle}]})
     |> Repo.insert()
+  end
+
+  defp test() do
+    from p in Player,
+      where: p.id == 1
   end
 end

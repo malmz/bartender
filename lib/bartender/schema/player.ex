@@ -3,11 +3,9 @@ defmodule Bartender.Schema.Player do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @primary_key {:id, :integer, autogenerate: false}
-
   schema "player" do
-    field :balance, :integer, default: 0
-    field :active_handle, :string
+    field :discord_id, :integer
+    has_one :active_handle, Handle, where: [active: true]
     has_many :handles, Handle
   end
 
@@ -16,6 +14,5 @@ defmodule Bartender.Schema.Player do
     |> cast(attrs, [:id, :balance, :active_handle])
     |> cast_assoc(:handles)
     |> validate_required([:id])
-    |> unique_constraint(:id, name: :player_pkey)
   end
 end

@@ -22,9 +22,10 @@ defmodule Bartender.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:nostrum, "~> 0.8"},
+      {:nostrum, "~> 0.9.0"},
       {:ecto_sql, "~> 3.0"},
-      {:postgrex, ">= 0.0.0"},
+      {:ecto_sqlite3, "~> 0.16"},
+      # {:postgrex, ">= 0.0.0"},
       {:ok, "~> 2.3"},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
     ]

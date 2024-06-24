@@ -13,4 +13,12 @@ defmodule Bartender.Utils do
     end)
     |> Enum.join("\n")
   end
+
+  def create_commands_map(commands) do
+    Code.ensure_all_loaded!(commands)
+
+    commands
+    |> Enum.map(&{&1.name(), &1})
+    |> Enum.into(%{})
+  end
 end

@@ -9,9 +9,10 @@ config :nostrum,
     :guilds
   ]
 
+config :bartender, Bartender.Repo, database: "./data.db"
+
 config :bartender,
   ecto_repos: [Bartender.Repo]
 
 config :logger, :default_handler, level: :debug
-
 config :logger, :default_formatter, metadata: [:shard, :guild, :channel]

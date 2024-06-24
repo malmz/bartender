@@ -3,16 +3,17 @@ defmodule Bartender.Schema.Handle do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @primary_key {:id, :string, autogenerate: false}
   schema "handle" do
     belongs_to :player, Player
+    field :name, :string
+    field :balance, :integer
+    field :active, :boolean
   end
 
   def changeset(handle, attrs) do
     handle
-    |> cast(attrs, [:id])
+    |> cast(attrs, [:name, :balance, :active])
     |> cast_assoc(:player)
-    |> validate_required([:id])
-    |> unique_constraint(:id)
+    |> validate_required([:name])
   end
 end
