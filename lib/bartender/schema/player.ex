@@ -1,4 +1,5 @@
 defmodule Bartender.Schema.Player do
+  @moduledoc false
   alias Bartender.Schema.Handle
   use Ecto.Schema
   import Ecto.Changeset

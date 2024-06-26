@@ -27,7 +27,9 @@ defmodule Bartender.MixProject do
       {:ecto_sqlite3, "~> 0.16"},
       # {:postgrex, ">= 0.0.0"},
       {:ok, "~> 2.3"},
-      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
+      {:defconstant, "~> 1.0.0"},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 end

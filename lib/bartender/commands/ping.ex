@@ -1,4 +1,5 @@
 defmodule Bartender.Commands.Ping do
+  @moduledoc false
   @behaviour Bartender.ApplicationCommand
 
   import Bitwise

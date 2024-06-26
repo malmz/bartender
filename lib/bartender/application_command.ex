@@ -1,4 +1,5 @@
 defmodule Bartender.ApplicationCommand do
+  @moduledoc false
   alias Nostrum.Struct.{ApplicationCommand, Interaction}
   @callback type() :: ApplicationCommand.command_type()
   @callback name() :: ApplicationCommand.command_name()

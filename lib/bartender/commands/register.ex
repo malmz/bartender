@@ -1,18 +1,16 @@
 defmodule Bartender.Commands.Register do
+  @moduledoc false
   @behaviour Bartender.ApplicationCommand
 
   require Logger
   alias Nostrum.Constants.ApplicationCommandOptionType, as: Opt
-  alias Nostrum.Constants.ApplicationCommandType
   alias Bartender.Utils
-  alias Ecto.Changeset
   alias Bartender.Repo
   alias Bartender.Schema.Player
   alias Nostrum.Struct.Guild.Member
   alias Nostrum.Struct.Interaction
   alias Nostrum.Api
   import Bitwise
-  import Ecto.Query
 
   @impl true
   def name, do: "register"
@@ -63,10 +61,5 @@ defmodule Bartender.Commands.Register do
     %Player{}
     |> Player.changeset(%{id: user_id, active_handle: handle, handles: [%{id: handle}]})
     |> Repo.insert()
-  end
-
-  defp test() do
-    from p in Player,
-      where: p.id == 1
   end
 end

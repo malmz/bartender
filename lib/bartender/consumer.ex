@@ -1,14 +1,16 @@
 defmodule Bartender.Consumer do
+  @moduledoc false
+  alias Bartender.Dispatcher
   require Logger
   use Nostrum.Consumer
 
   def handle_event({:READY, data, _ws_state}) do
     Logger.debug("Connected to Discord as #{data.user}")
-    Bartender.Commands.register()
+    Dispatcher.register()
   end
 
   def handle_event({:INTERACTION_CREATE, interaction, _ws_state}) do
-    Bartender.Commands.handle_interaction(interaction)
+    Dispatcher.handle_interaction(interaction)
   end
 
   def handle_event({type, data, _ws_state}) do

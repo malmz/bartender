@@ -1,13 +1,22 @@
 defmodule Bartender.Dispatcher do
-  alias Bartender.Utils
+  @moduledoc false
+  import Defconstant
   alias Nostrum.Struct.Interaction
   alias Nostrum.Api
   alias Bartender.Commands
 
-  @commands [
-    Commands.Ping,
-    Commands.Register
-  ]
+  defp commands() do
+    [
+      Commands.Ping,
+      Commands.Register
+    ]
+  end
+
+  defonce handler_map() do
+    commands()
+    |> Enum.map(fn cmd -> {cmd.name(), cmd} end)
+    |> Enum.into(%{})
+  end
 
   def register() do
     guild_id = Application.fetch_env!(:bartender, :guild_id)
@@ -18,31 +27,23 @@ defmodule Bartender.Dispatcher do
   end
 
   def handle_interaction(%Interaction{data: %{name: name}} = interaction) do
-    command = Enum.find(commands(), nil, fn cmd -> cmd.name() == name end)
+    command = handler_map()[name]
 
     if command != nil do
       command.handle(interaction)
     else
       Api.create_interaction_response(interaction, %{
         type: 4,
-        data: %{content}
+        data: %{content: "Command not found"}
       })
     end
-  end
-
-  defp commands() do
-    @commands
   end
 
   defp command_schema(command) do
     Code.ensure_loaded(command)
 
-    type =
-      if function_exported?(command, :type, 0) do
-        command.type()
-      else
-        :chat
-      end
+    type = safe_call(command, :type, :chat)
+    options = safe_call(command, :options, [])
 
     type =
       case type do
@@ -52,18 +53,19 @@ defmodule Bartender.Dispatcher do
         _ -> raise "invalid command type for #{command}"
       end
 
-    options =
-      if function_exported?(command, :options, 0) do
-        command.options()
-      else
-        []
-      end
-
     %{
       type: type,
       name: command.name(),
       description: command.description(),
       options: options
     }
+  end
+
+  defp safe_call(module, func, default) do
+    if function_exported?(module, func, 0) do
+      apply(module, func, [])
+    else
+      default
+    end
   end
 end

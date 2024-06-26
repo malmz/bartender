@@ -1,4 +1,5 @@
 defmodule Bartender.Impersonator do
+  @moduledoc false
   alias Nostrum.Struct.Channel
   alias Nostrum.Api
   use GenServer
