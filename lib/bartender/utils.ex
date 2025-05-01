@@ -1,5 +1,7 @@
 defmodule Bartender.Utils do
   @moduledoc false
+  alias Nostrum.Api
+  alias Nostrum.Struct.Guild.Role
   alias Ecto.Changeset
 
   def format_error(changeset) do
@@ -20,5 +22,11 @@ defmodule Bartender.Utils do
     commands
     |> Enum.map(&{&1.name(), &1})
     |> Enum.into(%{})
+  end
+
+  def get_role_id_by_name(guild_id, name) do
+    Api.get_guild_roles!(guild_id)
+    |> Enum.find(fn role -> role.name == name end)
+    |> then(fn %Role{id: id} -> id end)
   end
 end

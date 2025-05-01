@@ -9,7 +9,8 @@
       "name": "mix (Default task)",
       "request": "launch",
       "projectDir": "${workspaceRoot}",
-      "exitAfterTaskReturns": false
+      "exitAfterTaskReturns": false,
+      "excludeModules": ["Exqlite.Sqlite2NIF"]
     },
     {
       "type": "mix_task",

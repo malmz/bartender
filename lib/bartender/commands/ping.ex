@@ -3,7 +3,6 @@ defmodule Bartender.Commands.Ping do
   @behaviour Bartender.ApplicationCommand
 
   import Bitwise
-  alias Nostrum.Api
 
   @impl true
   def name, do: "ping"
@@ -12,10 +11,10 @@ defmodule Bartender.Commands.Ping do
   def description, do: "Ping the bot"
 
   @impl true
-  def handle(interaction) do
-    Api.create_interaction_response(interaction, %{
+  def handle(_interaction, _path, _options) do
+    %{
       type: 4,
       data: %{content: "Ping Pong!", flags: 1 <<< 6}
-    })
+    }
   end
 end

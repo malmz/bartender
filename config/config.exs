@@ -5,8 +5,14 @@ if config_env() == :dev do
 end
 
 config :nostrum,
+  caches: %{
+    presences: Nostrum.Cache.PresenceCache.NoOp
+  },
   gateway_intents: [
-    :guilds
+    :guilds,
+    :guild_webhooks,
+    :guild_messages,
+    :message_content
   ]
 
 config :bartender, Bartender.Repo, database: "./data.db"
@@ -14,5 +20,7 @@ config :bartender, Bartender.Repo, database: "./data.db"
 config :bartender,
   ecto_repos: [Bartender.Repo]
 
-config :logger, :default_handler, level: :debug
-config :logger, :default_formatter, metadata: [:shard, :guild, :channel]
+config :logger,
+  level: :debug
+
+config :logger, :console, metadata: [:guild, :channel]

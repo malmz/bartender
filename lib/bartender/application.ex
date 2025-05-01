@@ -1,10 +1,12 @@
 defmodule Bartender.Application do
   @moduledoc false
+  alias Bartender.Impersonator
   use Application
 
   @impl true
   def start(_type, _args) do
     children = [
+      Impersonator,
       Bartender.Repo,
       Bartender.Consumer
     ]

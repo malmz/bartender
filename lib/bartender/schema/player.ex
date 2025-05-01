@@ -12,8 +12,8 @@ defmodule Bartender.Schema.Player do
 
   def changeset(player, attrs) do
     player
-    |> cast(attrs, [:id, :balance, :active_handle])
-    |> cast_assoc(:handles)
-    |> validate_required([:id])
+    |> cast(attrs, [:discord_id])
+    |> cast_assoc(:active_handle)
+    |> validate_required([:discord_id, :active_handle])
   end
 end

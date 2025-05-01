@@ -1,6 +1,8 @@
 defmodule Bartender.Dispatcher do
   @moduledoc false
+  import Bitwise
   import Defconstant
+  require Logger
   alias Nostrum.Struct.Interaction
   alias Nostrum.Api
   alias Bartender.Commands
@@ -8,7 +10,8 @@ defmodule Bartender.Dispatcher do
   defp commands() do
     [
       Commands.Ping,
-      Commands.Register
+      Commands.Register,
+      Commands.Admin
     ]
   end
 
@@ -22,36 +25,53 @@ defmodule Bartender.Dispatcher do
     guild_id = Application.fetch_env!(:bartender, :guild_id)
 
     commands()
-    |> Enum.map(&command_schema/1)
-    |> Enum.each(&Api.create_guild_application_command(guild_id, &1))
+    |> Enum.map(&build_schema/1)
+    |> then(&Api.bulk_overwrite_guild_application_commands(guild_id, &1))
   end
 
   def handle_interaction(%Interaction{data: %{name: name}} = interaction) do
     command = handler_map()[name]
 
     if command != nil do
-      command.handle(interaction)
+      {path, options} = parse_options(interaction)
+
+      case command.handle(interaction, path, options) do
+        :ok ->
+          {:ok}
+
+        %{} = data ->
+          Api.create_interaction_response!(interaction, data)
+
+        {:error, e} ->
+          Logger.error(Exception.format(:error, e))
+
+          Api.create_interaction_response!(interaction, %{
+            type: 4,
+            data: %{content: "Error running command", flags: 1 <<< 6}
+          })
+      end
     else
-      Api.create_interaction_response(interaction, %{
+      Api.create_interaction_response!(interaction, %{
         type: 4,
-        data: %{content: "Command not found"}
+        data: %{content: "Command not found", flags: 1 <<< 6}
       })
     end
+  rescue
+    e ->
+      Api.create_interaction_response(interaction, %{
+        type: 4,
+        data: %{content: "Error running command", flags: 1 <<< 6}
+      })
+
+      Logger.error(Exception.format(:error, e, __STACKTRACE__))
+      reraise e, __STACKTRACE__
   end
 
-  defp command_schema(command) do
+  defp build_schema(command) do
     Code.ensure_loaded(command)
 
-    type = safe_call(command, :type, :chat)
+    type = safe_call(command, :type, 1)
     options = safe_call(command, :options, [])
-
-    type =
-      case type do
-        :chat -> 1
-        :user -> 2
-        :message -> 3
-        _ -> raise "invalid command type for #{command}"
-      end
 
     %{
       type: type,
@@ -59,6 +79,19 @@ defmodule Bartender.Dispatcher do
       description: command.description(),
       options: options
     }
+  end
+
+  defp parse_options(%Interaction{data: %{name: name, options: options}}) do
+    case options do
+      [%{type: 2, name: group, options: [%{type: 1, name: subcmd, options: opts}]}] ->
+        {{name, group, subcmd}, opts}
+
+      [%{type: 1, name: subcmd, options: opts}] ->
+        {{name, subcmd}, opts}
+
+      _ ->
+        {{name}, options}
+    end
   end
 
   defp safe_call(module, func, default) do

@@ -33,33 +33,39 @@ defmodule Bartender.Commands.Register do
   @impl true
   def handle(
         %Interaction{
-          member: %Member{user_id: user_id},
-          data: %{options: [%{name: "handle", value: user_handle}]}
-        } = interaction
+          guild_id: guild_id,
+          member: %Member{user_id: user_id}
+        },
+        _path,
+        [%{name: "handle", value: user_handle}]
       ) do
     case create_player(user_id, user_handle) do
       {:ok, _} ->
-        Api.create_interaction_response(interaction, %{
+        role_id = Utils.get_role_id_by_name(guild_id, "player")
+
+        {:ok} = Api.add_guild_member_role(guild_id, user_id, role_id)
+
+        %{
           type: 4,
           data: %{content: "Registerd player", flags: 1 <<< 6}
-        })
+        }
 
       {:error, changeset} ->
         changeset
         |> tap(&Logger.error("Error registering player: #{inspect(&1)}"))
         |> Utils.format_error()
         |> then(
-          &Api.create_interaction_response(interaction, %{
+          &%{
             type: 4,
             data: %{content: "Error registering player:\n#{&1}", flags: 1 <<< 6}
-          })
+          }
         )
     end
   end
 
   defp create_player(user_id, handle) do
     %Player{}
-    |> Player.changeset(%{id: user_id, active_handle: handle, handles: [%{id: handle}]})
+    |> Player.changeset(%{discord_id: user_id, active_handle: %{name: handle}})
     |> Repo.insert()
   end
 end
