@@ -5,9 +5,10 @@ defmodule Bartender.MixProject do
     [
       app: :bartender,
       version: "0.1.0",
-      elixir: "~> 1.16",
+      elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      consolidate_protocols: Mix.env() != :dev
     ]
   end
 
@@ -22,11 +23,14 @@ defmodule Bartender.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:ash, "~> 3.0"},
       {:nostrum, "~> 0.10"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
       {:ok, "~> 2.3"},
-      {:defconstant, "~> 1.0.0"}
+      {:defconstant, "~> 1.0.0"},
+      {:sourceror, "~> 1.8", only: [:dev, :test]},
+      {:igniter, "~> 0.6", only: [:dev, :test]}
     ]
   end
 end
