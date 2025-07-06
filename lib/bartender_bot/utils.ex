@@ -1,5 +1,6 @@
-defmodule Bartender.Utils do
+defmodule BartenderBot.Utils do
   @moduledoc false
+  use OK.Pipe
   alias Nostrum.Api
   alias Nostrum.Struct.Guild.Role
   alias Ecto.Changeset
@@ -25,8 +26,13 @@ defmodule Bartender.Utils do
   end
 
   def get_role_id_by_name(guild_id, name) do
-    Api.get_guild_roles!(guild_id)
-    |> Enum.find(fn role -> role.name == name end)
+    roles =
+      case Api.Guild.roles(guild_id) do
+        {:ok, r} -> r
+        {:error, e} -> raise e
+      end
+
+    Enum.find(roles, fn role -> role.name == name end)
     |> then(fn %Role{id: id} -> id end)
   end
 end

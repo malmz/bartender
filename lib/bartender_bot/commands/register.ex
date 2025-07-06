@@ -1,10 +1,10 @@
-defmodule Bartender.Commands.Register do
+defmodule BartenderBot.Commands.Register do
   @moduledoc false
-  @behaviour Bartender.ApplicationCommand
+  @behaviour BartenderBot.ApplicationCommand
 
   require Logger
   alias Nostrum.Constants.ApplicationCommandOptionType, as: Opt
-  alias Bartender.Utils
+  alias BartenderBot.Utils
   alias Bartender.Repo
   alias Bartender.Schema.Player
   alias Nostrum.Struct.Guild.Member
@@ -43,7 +43,7 @@ defmodule Bartender.Commands.Register do
       {:ok, _} ->
         role_id = Utils.get_role_id_by_name(guild_id, "player")
 
-        {:ok} = Api.add_guild_member_role(guild_id, user_id, role_id)
+        {:ok} = Api.Guild.add_member_role(guild_id, user_id, role_id)
 
         %{
           type: 4,

@@ -1,11 +1,11 @@
-defmodule Bartender.MessageHandler do
+defmodule BartenderBot.MessageHandler do
   alias Nostrum.Api
   alias Nostrum.Struct.Message
-  alias Bartender.Impersonator
+  alias BartenderBot.Impersonator
 
   def handle_message(%Message{} = message) do
     Task.start(fn ->
-      Api.delete_message!(message)
+      Api.Message.delete(message)
     end)
 
     Impersonator.send(

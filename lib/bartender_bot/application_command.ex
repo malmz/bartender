@@ -1,4 +1,4 @@
-defmodule Bartender.ApplicationCommand do
+defmodule BartenderBot.ApplicationCommand do
   @moduledoc false
   alias Nostrum.Struct.{ApplicationCommand, Interaction, ApplicationCommandInteractionDataOption}
 

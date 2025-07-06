@@ -1,4 +1,4 @@
-defmodule Bartender.Impersonator do
+defmodule BartenderBot.Impersonator do
   @moduledoc false
   alias Nostrum.Cache.GuildCache
   alias Nostrum.Struct.User
@@ -42,7 +42,7 @@ defmodule Bartender.Impersonator do
   @impl true
   def handle_cast({:send, guild_id, channel_id, name, msg}, state) do
     {webhook, new_state} = ensure_webhook(state, guild_id, channel_id)
-    Api.execute_webhook(webhook.id, webhook.token, %{username: name, content: msg})
+    Api.Webhook.execute(webhook.id, webhook.token, %{username: name, content: msg})
     {:noreply, new_state}
   end
 
@@ -77,11 +77,9 @@ defmodule Bartender.Impersonator do
   end
 
   defp ensure_webhook(%__MODULE__{} = state, guild_id, channel_id) do
-    channel_id = to_string(channel_id)
-
     case state.webhooks[guild_id] do
       nil ->
-        {:ok, new_webhook} = Api.create_webhook(channel_id, %{name: "Impersonator", avatar: ""})
+        {:ok, new_webhook} = Api.Webhook.create(channel_id, %{name: "Impersonator", avatar: ""})
         {new_webhook, put_webhook(state, guild_id, new_webhook)}
 
       %{channel_id: ^channel_id} = webhook ->
@@ -96,7 +94,7 @@ defmodule Bartender.Impersonator do
   end
 
   defp find_guild_webhook(application_id, guild_id) do
-    Api.get_guild_webhooks(guild_id)
+    Api.Guild.webhooks(guild_id)
     ~> Enum.find(&(&1.application_id == application_id))
   end
 
@@ -105,13 +103,13 @@ defmodule Bartender.Impersonator do
   end
 
   defp move_webhook(webhook, channel_id) do
-    Api.modify_webhook(webhook.id, %{channel_id: channel_id})
+    Api.Webhook.modify(webhook.id, %{channel_id: channel_id})
   end
 
   defp get_application_id() do
     case Me.get() do
       nil ->
-        {:ok, %{id: application_id}} = Api.get_application_information()
+        {:ok, %{id: application_id}} = Api.Self.application_information()
         application_id
 
       %User{id: application_id} ->

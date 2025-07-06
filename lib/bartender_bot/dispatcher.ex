@@ -1,11 +1,11 @@
-defmodule Bartender.Dispatcher do
+defmodule BartenderBot.Dispatcher do
   @moduledoc false
   import Bitwise
   import Defconstant
   require Logger
   alias Nostrum.Struct.Interaction
   alias Nostrum.Api
-  alias Bartender.Commands
+  alias BartenderBot.Commands
 
   defp commands() do
     [
@@ -26,7 +26,7 @@ defmodule Bartender.Dispatcher do
 
     commands()
     |> Enum.map(&build_schema/1)
-    |> then(&Api.bulk_overwrite_guild_application_commands(guild_id, &1))
+    |> then(&Api.ApplicationCommand.bulk_overwrite_guild_commands(guild_id, &1))
   end
 
   def handle_interaction(%Interaction{data: %{name: name}} = interaction) do
@@ -40,25 +40,25 @@ defmodule Bartender.Dispatcher do
           {:ok}
 
         %{} = data ->
-          Api.create_interaction_response!(interaction, data)
+          Api.Interaction.create_response(interaction, data)
 
         {:error, e} ->
           Logger.error(Exception.format(:error, e))
 
-          Api.create_interaction_response!(interaction, %{
+          Api.Interaction.create_response(interaction, %{
             type: 4,
             data: %{content: "Error running command", flags: 1 <<< 6}
           })
       end
     else
-      Api.create_interaction_response!(interaction, %{
+      Api.Interaction.create_response(interaction, %{
         type: 4,
         data: %{content: "Command not found", flags: 1 <<< 6}
       })
     end
   rescue
     e ->
-      Api.create_interaction_response(interaction, %{
+      Api.Interaction.create_response(interaction, %{
         type: 4,
         data: %{content: "Error running command", flags: 1 <<< 6}
       })

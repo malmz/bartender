@@ -1,9 +1,5 @@
 import Config
 
-if config_env() == :dev do
-  import_config "secrets.exs"
-end
-
 config :nostrum,
   caches: %{
     presences: Nostrum.Cache.PresenceCache.NoOp
@@ -15,12 +11,12 @@ config :nostrum,
     :message_content
   ]
 
-config :bartender, Bartender.Repo, database: "./data.db"
+  config :bartender,
+    ecto_repos: [Bartender.Repo],
+    generators: [timestamp_type: :utc_datetime]
 
-config :bartender,
-  ecto_repos: [Bartender.Repo]
+config :logger, :console,
+  format: "$time $metadata[$level] $message\n",
+  metadata: [:guild, :channel]
 
-config :logger,
-  level: :debug
-
-config :logger, :console, metadata: [:guild, :channel]
+import_config "#{config_env()}.exs"

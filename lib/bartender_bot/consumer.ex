@@ -1,13 +1,10 @@
-defmodule Bartender.Consumer do
+defmodule BartenderBot.Consumer do
   @moduledoc false
-  alias Nostrum.Cache.Me
-  alias Nostrum.Struct.User
-  alias Nostrum.Api
-  alias Bartender.MessageHandler
+  alias BartenderBot.MessageHandler
   alias Nostrum.Struct.Guild
-  alias Bartender.Impersonator
+  alias BartenderBot.Impersonator
   alias Nostrum.Struct.Message
-  alias Bartender.Dispatcher
+  alias BartenderBot.Dispatcher
   require Logger
   use Nostrum.Consumer
 

@@ -1,9 +1,9 @@
-defmodule Bartender.Commands.Admin do
+defmodule BartenderBot.Commands.Admin do
   @moduledoc false
-  @behaviour Bartender.ApplicationCommand
+  @behaviour BartenderBot.ApplicationCommand
   require Logger
   import Bitwise
-  alias Bartender.Utils
+  alias BartenderBot.Utils
   alias Nostrum.Struct.Interaction
   alias Nostrum.Api
   alias Bartender.Repo
@@ -53,7 +53,7 @@ defmodule Bartender.Commands.Admin do
       end
     )
 
-    Api.remove_guild_member_role(guild_id, discord_id, role_id)
+    Api.Guild.remove_member_role(guild_id, discord_id, role_id)
 
     %{
       type: 4,
