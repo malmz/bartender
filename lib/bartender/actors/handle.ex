@@ -1,11 +1,10 @@
-defmodule Bartender.Schema.Handle do
+defmodule Bartender.Actors.Handle do
   @moduledoc false
-  alias Bartender.Schema.Player
   use Ecto.Schema
   import Ecto.Changeset
 
   schema "handle" do
-    belongs_to :player, Player
+    belongs_to :player, Bartender.Actors.Player
     field :name, :string
     field :balance, :integer
     field :active, :boolean

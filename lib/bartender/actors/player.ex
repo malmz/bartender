@@ -1,17 +1,18 @@
 defmodule Bartender.Actors.Player do
-  use Ash.Resource,
-    domain: Bartender.Actors,
-    data_layer: Ash.DataLayer.Ets
+  @moduledoc false
+  use Ecto.Schema
+  import Ecto.Changeset
 
-  actions do
-    defaults [:read]
-
-    create :create
+  schema "player" do
+    field :discord_id, :integer
+    has_one :active_handle, Bartender.Actors.Handle, where: [active: true]
+    has_many :handles, Bartender.Actors.Handle
   end
 
-  attributes do
-    uuid_primary_key :id
-
-    attribute :discord_id, :integer
+  def changeset(player, attrs) do
+    player
+    |> cast(attrs, [:discord_id])
+    |> cast_assoc(:active_handle)
+    |> validate_required([:discord_id, :active_handle])
   end
 end

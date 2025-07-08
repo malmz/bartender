@@ -1,7 +1,7 @@
 import Config
 
 config :bartender, Bartender.Repo,
-  username: "malmz",
+  username: "postgres",
   password: "",
   hostname: "localhost",
   database: "bartender_dev",

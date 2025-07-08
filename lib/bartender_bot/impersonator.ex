@@ -95,7 +95,7 @@ defmodule BartenderBot.Impersonator do
 
   defp find_guild_webhook(application_id, guild_id) do
     Api.Guild.webhooks(guild_id)
-    ~> Enum.find(&(&1.application_id == application_id))
+    ~> Enum.find(&(&1.user.id == application_id))
   end
 
   defp put_webhook(%__MODULE__{} = state, guild_id, webhook) do

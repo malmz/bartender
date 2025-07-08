@@ -8,6 +8,7 @@ defmodule Bartender.MixProject do
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      aliases: aliases(),
       consolidate_protocols: Mix.env() != :dev
     ]
   end
@@ -28,9 +29,14 @@ defmodule Bartender.MixProject do
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
       {:ok, "~> 2.3"},
-      {:defconstant, "~> 1.0.0"},
-      {:sourceror, "~> 1.8", only: [:dev, :test]},
-      {:igniter, "~> 0.6", only: [:dev, :test]}
+      {:defconstant, "~> 1.0.0"}
+    ]
+  end
+
+  defp aliases do
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"]
     ]
   end
 end

@@ -1,5 +1,6 @@
 defmodule BartenderBot.Consumer do
   @moduledoc false
+  alias Nostrum.Api
   alias BartenderBot.MessageHandler
   alias Nostrum.Struct.Guild
   alias BartenderBot.Impersonator
@@ -10,11 +11,12 @@ defmodule BartenderBot.Consumer do
 
   def handle_event({:READY, data, _ws_state}) do
     Logger.debug("Connected to Discord as #{data.user}")
-    Dispatcher.register()
+    Api.Self.update_status(:online, "version #{Application.spec(:bartender, :vsn)}")
   end
 
   def handle_event({:GUILD_AVAILABLE, %Guild{} = guild, _ws_state}) do
     Logger.debug("Guild connected #{guild.name}")
+    Dispatcher.register()
     Impersonator.add_guild(guild.id)
   end
 

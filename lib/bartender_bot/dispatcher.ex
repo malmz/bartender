@@ -21,9 +21,7 @@ defmodule BartenderBot.Dispatcher do
     |> Enum.into(%{})
   end
 
-  def register() do
-    guild_id = Application.fetch_env!(:bartender, :guild_id)
-
+  def register(guild_id) do
     commands()
     |> Enum.map(&build_schema/1)
     |> then(&Api.ApplicationCommand.bulk_overwrite_guild_commands(guild_id, &1))

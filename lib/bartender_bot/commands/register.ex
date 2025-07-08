@@ -6,7 +6,7 @@ defmodule BartenderBot.Commands.Register do
   alias Nostrum.Constants.ApplicationCommandOptionType, as: Opt
   alias BartenderBot.Utils
   alias Bartender.Repo
-  alias Bartender.Schema.Player
+  alias Bartender.Actors.Player
   alias Nostrum.Struct.Guild.Member
   alias Nostrum.Struct.Interaction
   alias Nostrum.Api
